@@ -6,6 +6,7 @@ cloudfiles-ping: Test the performance and availability of the Rackspace cloudfil
 
 import argparse
 import contextlib
+import os
 import time
 import uuid
 
@@ -30,7 +31,7 @@ def timer():
     print '%10.3f' % (elapsed_time),
 
     
-def ping(username, api_key, container=None, use_service_net=False):
+def ping(username, key, container=None, use_service_net=False):
     """
     Ping the Rackspace cloudfiles service, printing the elapsed time for a connection, a write, and a read.
     """
@@ -39,7 +40,7 @@ def ping(username, api_key, container=None, use_service_net=False):
         with timer():
 
             with timer():
-                conn = cloudfiles.get_connection(username, api_key, servicenet=use_service_net)
+                conn = cloudfiles.get_connection(username, key, servicenet=use_service_net)
 
             with timer():
                 if container is None:
@@ -64,13 +65,13 @@ def ping(username, api_key, container=None, use_service_net=False):
 
     except KeyboardInterrupt:
         raise
-    except Exception, e:
-        print '%10s (%s)' % ('*', e),
+    except Exception as e:
+        print '%10s (Exception: %s)' % ('*', e),
 
     print
 
 
-def ping_forever(username, api_key,
+def ping_forever(username, key,
                  container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL):
     """
     Continually ping the Rackspace cloudfiles service, sleeping for `ping_interval` seconds between requests.
@@ -84,7 +85,7 @@ def ping_forever(username, api_key,
 
         while True:
             print '%10d' % (request_count + 1), 
-            ping(username, api_key, container=container, use_service_net=use_service_net)
+            ping(username, key, container=container, use_service_net=use_service_net)
             request_count += 1
             time.sleep(ping_interval)
 
@@ -96,9 +97,8 @@ def ping_forever(username, api_key,
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Test the performance and availability of the Rackspace cloudfiles service.')
 
-    parser.add_argument('username', help='Rackspace cloudfiles username')
-    parser.add_argument('api_key', help='Rackspace cloudfiles API key')
-
+    parser.add_argument('-u', '--username', help='Rackspace cloudfiles username (default: CFUSER)')
+    parser.add_argument('-k', '--key', help='Rackspace cloudfiles API key (default: CFKEY)')
     parser.add_argument('-c', '--container',
                        help='Use the specified container (default: use the first container [index 0])')
     parser.add_argument('-s', '--service-net', dest="use_service_net", action='store_true',
@@ -108,7 +108,15 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-    ping_forever(args.username, args.api_key,
+    username = args.username or os.getenv('CFUSER')
+    if not username:
+        parser.error("username not provided and not found in CFUSER environment variable")
+
+    key = args.key or os.getenv('CFKEY')
+    if not key:
+        parser.error("key not provided and not found in CFKEY environment variable")
+
+    ping_forever(username, key,
                  container=args.container,
                  use_service_net=args.use_service_net,
                  ping_interval=args.ping_interval)
