@@ -7,11 +7,48 @@ Test the performance and availability of the Rackspace cloudfiles service.
 Example
 -------
 
+    $ cfping
+    Pinging Rackspace cloudfiles (sending request every 1 seconds):
+        seq. #    connect  container     create      write       read      total
+             1      0.448      0.369      0.121      1.331      0.047      2.317
+             2      0.345      0.390      0.116      0.375      0.050      1.277
+             3      0.671      0.339      0.183      0.239      0.053      1.486
+             4      0.341      0.352      0.245      1.541      0.049      2.527
+             5      0.360      0.342      0.116      0.900      0.047      1.764
+    ^C
+    5 requests
 
 
 Usage
 -----
 
+    usage: cfping [-h] [-u USERNAME] [-k KEY] [-c CONTAINER] [-s]
+                  [-i PING_INTERVAL]
+
+    Test the performance and availability of the Rackspace cloudfiles service.
+
+    optional arguments:
+      -h, --help            show this help message and exit
+      -u USERNAME, --username USERNAME
+                            Rackspace cloudfiles username (default: CFUSER)
+      -k KEY, --key KEY     Rackspace cloudfiles API key (default: CFKEY)
+      -c CONTAINER, --container CONTAINER
+                            Use the specified container (default: use the first
+                            container [index 0])
+      -s, --service-net     Use the Rackspace service network (default: use public
+                            network)
+      -i PING_INTERVAL, --interval PING_INTERVAL
+                            Seconds to wait between ping requests (default: 1
+                            seconds)
+
+
+Environment
+-----------
+
+`cfping` accepts the following environment variables:
+
+* `CFUSER`, the account username. The `-u` option, if provided, takes precedence.
+* `CFKEY`, the account key. The `-k` option, if provided, takes precedence.
 
 
 Installation
