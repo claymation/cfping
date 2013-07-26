@@ -1,14 +1,14 @@
 cfping
 ======
 
-Test the performance and availability of the Rackspace cloudfiles service.
+Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.
 
 
 Example
 -------
 
     $ cfping
-    Pinging Rackspace cloudfiles (sending request every 1 seconds):
+    Pinging Rackspace cloudfiles or Openstack swift (sending request every 1 seconds):
         seq. #    connect  container     create      write       read     delete      total
              1      0.100      0.061      0.041      0.286      0.009      0.034      0.532
              2      0.068      0.059      0.031      0.168      0.010      0.014      0.351
@@ -25,15 +25,15 @@ Usage
 	usage: cfping [-h] [-u USERNAME] [-k KEY] [-a AUTHURL] [-c CONTAINER] [-s]
 	              [-i PING_INTERVAL] [-r PING_REPETITIONS]
 
-	Test the performance and availability of the Rackspace cloudfiles service.
+	Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.
 
 	optional arguments:
 	  -h, --help            show this help message and exit
 	  -u USERNAME, --username USERNAME
-	                        Rackspace cloudfiles username (default: CFUSER)
-	  -k KEY, --key KEY     Rackspace cloudfiles API key (default: CFKEY)
+	                        Rackspace cloudfiles or Openstack swift username (default: CFUSER)
+	  -k KEY, --key KEY     Rackspace cloudfiles or Openstack swift API key (default: CFKEY)
 	  -a AUTHURL, --authurl AUTHURL
-	                        Rackspace cloudfiles auth url (default: CFAUTHURL)
+	                        Rackspace cloudfiles or Openstack swift auth url (default: CFAUTHURL)
 	  -c CONTAINER, --container CONTAINER
 	                        Use the specified container (default: use the first
 	                        container [index 0])
