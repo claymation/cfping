@@ -23,7 +23,7 @@ Usage
 -----
 
 	usage: cfping [-h] [-u USERNAME] [-k KEY] [-a AUTHURL] [-c CONTAINER] [-s]
-	              [-i PING_INTERVAL]
+	              [-i PING_INTERVAL] [-r PING_REPETITIONS]
 
 	Test the performance and availability of the Rackspace cloudfiles service.
 
@@ -42,6 +42,9 @@ Usage
 	  -i PING_INTERVAL, --interval PING_INTERVAL
 	                        Seconds to wait between ping requests (default: 1
 	                        seconds)
+	  -r PING_REPETITIONS, --repetitions PING_REPETITIONS
+	                        Number of repetitions (default: 0 repetitions) default
+	                        infinite
 
 
 

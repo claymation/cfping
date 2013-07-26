@@ -14,6 +14,7 @@ import cloudfiles
 
 
 DEFAULT_PING_INTERVAL = 1
+DEFAULT_PING_REPETITIONS = 0
 TEST_DATA = 'The quick brown fox jumps over the lazy dog.'
 
 
@@ -31,7 +32,7 @@ def timer():
     print '%10.3f' % (elapsed_time),
 
     
-def ping(auth_url,username, key, container=None, use_service_net=False):
+def ping(auth_url,username, key, container=None, use_service_net=False, repetitions=True):
     """
     Ping the Rackspace cloudfiles service, printing the elapsed time for a connection, a write, and a read.
     """
@@ -72,7 +73,7 @@ def ping(auth_url,username, key, container=None, use_service_net=False):
 
 
 def ping_forever(authurl,username, key,
-                 container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL):
+                 container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL,repetitions=0):
     """
     Continually ping the Rackspace cloudfiles service, sleeping for `ping_interval` seconds between requests.
     """
@@ -80,15 +81,18 @@ def ping_forever(authurl,username, key,
     print '%10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 'connect', 'container', 'create', 'write', 'read', 'total')
 
     request_count = 0
-
+    
     try:
 
-        while True:
+        loop = True
+        while loop:
             print '%10d' % (request_count + 1), 
             ping(authurl,username, key, container=container, use_service_net=use_service_net)
             request_count += 1
             time.sleep(ping_interval)
-
+            if repetitions > 0 and request_count == repetitions:
+                loop = False
+				
     except KeyboardInterrupt:
         print
         print '%d requests' % request_count
@@ -106,6 +110,9 @@ if __name__ == '__main__':
                        help='Use the Rackspace service network (default: use public network)')
     parser.add_argument('-i', '--interval', dest='ping_interval', type=int, default=DEFAULT_PING_INTERVAL,
                        help='Seconds to wait between ping requests (default: %d seconds)' % DEFAULT_PING_INTERVAL)
+    parser.add_argument('-r', '--repetitions', dest='ping_repetitions', type=int, default=DEFAULT_PING_REPETITIONS,
+                       help='Number of repetitions (default: %d repetitions) default infinite' % DEFAULT_PING_REPETITIONS)
+
 
     args = parser.parse_args()
 
@@ -124,4 +131,5 @@ if __name__ == '__main__':
     ping_forever(authurl,username, key,
                  container=args.container,
                  use_service_net=args.use_service_net,
-                 ping_interval=args.ping_interval)
+                 ping_interval=args.ping_interval,
+                 repetitions=args.ping_repetitions)
