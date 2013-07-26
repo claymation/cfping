@@ -31,7 +31,7 @@ def timer():
     print '%10.3f' % (elapsed_time),
 
     
-def ping(username, key, container=None, use_service_net=False):
+def ping(auth_url,username, key, container=None, use_service_net=False):
     """
     Ping the Rackspace cloudfiles service, printing the elapsed time for a connection, a write, and a read.
     """
@@ -40,7 +40,7 @@ def ping(username, key, container=None, use_service_net=False):
         with timer():
 
             with timer():
-                conn = cloudfiles.get_connection(username, key, servicenet=use_service_net)
+                conn = cloudfiles.get_connection(username, key, servicenet=use_service_net,authurl=auth_url)
 
             with timer():
                 if container is None:
@@ -71,7 +71,7 @@ def ping(username, key, container=None, use_service_net=False):
     print
 
 
-def ping_forever(username, key,
+def ping_forever(authurl,username, key,
                  container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL):
     """
     Continually ping the Rackspace cloudfiles service, sleeping for `ping_interval` seconds between requests.
@@ -85,7 +85,7 @@ def ping_forever(username, key,
 
         while True:
             print '%10d' % (request_count + 1), 
-            ping(username, key, container=container, use_service_net=use_service_net)
+            ping(authurl,username, key, container=container, use_service_net=use_service_net)
             request_count += 1
             time.sleep(ping_interval)
 
@@ -99,6 +99,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-u', '--username', help='Rackspace cloudfiles username (default: CFUSER)')
     parser.add_argument('-k', '--key', help='Rackspace cloudfiles API key (default: CFKEY)')
+    parser.add_argument('-a', '--authurl', help='Rackspace cloudfiles auth url (default: CFAUTHURL)')
     parser.add_argument('-c', '--container',
                        help='Use the specified container (default: use the first container [index 0])')
     parser.add_argument('-s', '--service-net', dest="use_service_net", action='store_true',
@@ -112,11 +113,15 @@ if __name__ == '__main__':
     if not username:
         parser.error("username not provided and not found in CFUSER environment variable")
 
+    authurl = args.authurl or os.getenv('CFAUTHURL')
+    if not authurl:
+        parser.error("username not provided and not found in CFUSER environment variable")
+
     key = args.key or os.getenv('CFKEY')
     if not key:
         parser.error("key not provided and not found in CFKEY environment variable")
 
-    ping_forever(username, key,
+    ping_forever(authurl,username, key,
                  container=args.container,
                  use_service_net=args.use_service_net,
                  ping_interval=args.ping_interval)
