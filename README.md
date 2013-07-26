@@ -8,7 +8,7 @@ Example
 -------
 
     $ cfping
-    Pinging Rackspace cloudfiles or Openstack swift (sending request every 1 seconds):
+    Pinging storage (sending request every 1 seconds with 81.0 bytes ):
         seq. #    connect  container     create      write       read     delete      total
              1      0.100      0.061      0.041      0.286      0.009      0.034      0.532
              2      0.068      0.059      0.031      0.168      0.010      0.014      0.351
@@ -23,7 +23,7 @@ Usage
 -----
 
     usage: cfping [-h] [-u USERNAME] [-k KEY] [-a AUTHURL] [-c CONTAINER] [-s]
-                  [-i PING_INTERVAL] [-r PING_REPETITIONS]
+                  [-i PING_INTERVAL] [-r PING_REPETITIONS] [-t TEST_DATA_SIZE]
 
     Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.
 
@@ -45,6 +45,9 @@ Usage
       -r PING_REPETITIONS, --repetitions PING_REPETITIONS
                         Number of repetitions (default: 0 repetitions) default
                             infinite
+                            
+      -t TEST_DATA_SIZE, --test-data-size TEST_DATA_SIZE
+                        Test data size in Bytes (default: 81 Bytes)
 
 
 Environment
