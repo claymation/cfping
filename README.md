@@ -22,24 +22,27 @@ Example
 Usage
 -----
 
-    usage: cfping [-h] [-u USERNAME] [-k KEY] [-c CONTAINER] [-s]
-                  [-i PING_INTERVAL]
+	usage: cfping [-h] [-u USERNAME] [-k KEY] [-a AUTHURL] [-c CONTAINER] [-s]
+	              [-i PING_INTERVAL]
 
-    Test the performance and availability of the Rackspace cloudfiles service.
+	Test the performance and availability of the Rackspace cloudfiles service.
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      -u USERNAME, --username USERNAME
-                            Rackspace cloudfiles username (default: CFUSER)
-      -k KEY, --key KEY     Rackspace cloudfiles API key (default: CFKEY)
-      -c CONTAINER, --container CONTAINER
-                            Use the specified container (default: use the first
-                            container [index 0])
-      -s, --service-net     Use the Rackspace service network (default: use public
-                            network)
-      -i PING_INTERVAL, --interval PING_INTERVAL
-                            Seconds to wait between ping requests (default: 1
-                            seconds)
+	optional arguments:
+	  -h, --help            show this help message and exit
+	  -u USERNAME, --username USERNAME
+	                        Rackspace cloudfiles username (default: CFUSER)
+	  -k KEY, --key KEY     Rackspace cloudfiles API key (default: CFKEY)
+	  -a AUTHURL, --authurl AUTHURL
+	                        Rackspace cloudfiles auth url (default: CFAUTHURL)
+	  -c CONTAINER, --container CONTAINER
+	                        Use the specified container (default: use the first
+	                        container [index 0])
+	  -s, --service-net     Use the Rackspace service network (default: use public
+	                        network)
+	  -i PING_INTERVAL, --interval PING_INTERVAL
+	                        Seconds to wait between ping requests (default: 1
+	                        seconds)
+
 
 
 Environment
@@ -49,7 +52,7 @@ Environment
 
 * `CFUSER`, the account username. The `-u` option, if provided, takes precedence.
 * `CFKEY`, the account key. The `-k` option, if provided, takes precedence.
-
+* `CFAUTHURL`, the authentication endpoint. The `-a` option, if provided, takes precedence.
 
 Installation
 ------------
