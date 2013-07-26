@@ -60,6 +60,9 @@ def ping(auth_url,username, key, container=None, use_service_net=False, repetiti
 
             with timer():
                 result = obj.read()
+            
+            with timer():
+                container.delete_object(obj_name)
 
         if result != TEST_DATA:
             print '%10s' % ('NOMATCH'),
@@ -78,7 +81,7 @@ def ping_forever(authurl,username, key,
     Continually ping the Rackspace cloudfiles service, sleeping for `ping_interval` seconds between requests.
     """
     print 'Pinging Rackspace cloudfiles (sending request every %d seconds):' % ping_interval
-    print '%10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 'connect', 'container', 'create', 'write', 'read', 'total')
+    print '%10s %10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 'connect', 'container', 'create', 'write', 'read', 'delete', 'total')
 
     request_count = 0
     
