@@ -14,7 +14,7 @@ import cloudfiles
 
 
 DEFAULT_PING_INTERVAL = 1
-DEFAULT_PING_REPETITIONS = 0
+DEFAULT_PING_REPETITIONS = None
 TEST_DATA = 'The quick brown fox jumps over the lazy dog.'
 
 
@@ -32,7 +32,7 @@ def timer():
     print '%10.3f' % (elapsed_time),
 
     
-def ping(auth_url,username, key, container=None, use_service_net=False, repetitions=True):
+def ping(auth_url, username, key, container=None, use_service_net=False, repetitions=True):
     """
     Ping the Rackspace cloudfiles or Openstack swift service, printing the elapsed time for a connection, a write, and a read.
     """
@@ -41,7 +41,10 @@ def ping(auth_url,username, key, container=None, use_service_net=False, repetiti
         with timer():
 
             with timer():
-                conn = cloudfiles.get_connection(username, key, servicenet=use_service_net,authurl=auth_url)
+                conn = cloudfiles.get_connection(username, 
+                                                 key, 
+                                                 servicenet=use_service_net, 
+                                                 authurl=auth_url)
 
             with timer():
                 if container is None:
@@ -75,27 +78,30 @@ def ping(auth_url,username, key, container=None, use_service_net=False, repetiti
     print
 
 
-def ping_forever(authurl,username, key,
+def ping_forever(authurl, username, key,
                  container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL,repetitions=0):
     """
     Continually ping the Rackspace cloudfiles or Openstack swift service, sleeping for `ping_interval` seconds between requests.
     """
-    print 'Pinging Rackspace cloudfiles or Openstack swift (sending request every %d seconds):' % ping_interval
-    print '%10s %10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 'connect', 'container', 'create', 'write', 'read', 'delete', 'total')
-
+    print 'Pinging storage (sending request every %d seconds):' % ping_interval
+    print '%10s %10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 
+                                                       'connect', 
+                                                       'container', 
+                                                       'create', 
+                                                       'write', 
+                                                       'read', 
+                                                       'delete', 
+                                                       'total')
     request_count = 0
-    
     try:
-
-        loop = True
-        while loop:
+        while True:
             print '%10d' % (request_count + 1), 
-            ping(authurl,username, key, container=container, use_service_net=use_service_net)
+            ping(authurl, username, key, container=container, use_service_net=use_service_net)
             request_count += 1
             time.sleep(ping_interval)
-            if repetitions > 0 and request_count == repetitions:
-                loop = False
-				
+            if repetitions and request_count == repetitions:
+                break
+
     except KeyboardInterrupt:
         print
         print '%d requests' % request_count
@@ -114,7 +120,7 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--interval', dest='ping_interval', type=int, default=DEFAULT_PING_INTERVAL,
                        help='Seconds to wait between ping requests (default: %d seconds)' % DEFAULT_PING_INTERVAL)
     parser.add_argument('-r', '--repetitions', dest='ping_repetitions', type=int, default=DEFAULT_PING_REPETITIONS,
-                       help='Number of repetitions (default: %d repetitions) default infinite' % DEFAULT_PING_REPETITIONS)
+                       help='Number of repetitions (default: infinite)')
 
 
     args = parser.parse_args()

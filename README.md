@@ -22,30 +22,29 @@ Example
 Usage
 -----
 
-	usage: cfping [-h] [-u USERNAME] [-k KEY] [-a AUTHURL] [-c CONTAINER] [-s]
-	              [-i PING_INTERVAL] [-r PING_REPETITIONS]
+    usage: cfping [-h] [-u USERNAME] [-k KEY] [-a AUTHURL] [-c CONTAINER] [-s]
+                  [-i PING_INTERVAL] [-r PING_REPETITIONS]
 
-	Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.
+    Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.
 
-	optional arguments:
-	  -h, --help            show this help message and exit
-	  -u USERNAME, --username USERNAME
-	                        Rackspace cloudfiles or Openstack swift username (default: CFUSER)
-	  -k KEY, --key KEY     Rackspace cloudfiles or Openstack swift API key (default: CFKEY)
-	  -a AUTHURL, --authurl AUTHURL
-	                        Rackspace cloudfiles or Openstack swift auth url (default: CFAUTHURL)
-	  -c CONTAINER, --container CONTAINER
-	                        Use the specified container (default: use the first
-	                        container [index 0])
-	  -s, --service-net     Use the Rackspace service network (default: use public
-	                        network)
-	  -i PING_INTERVAL, --interval PING_INTERVAL
-	                        Seconds to wait between ping requests (default: 1
-	                        seconds)
-	  -r PING_REPETITIONS, --repetitions PING_REPETITIONS
-	                        Number of repetitions (default: 0 repetitions) default
-	                        infinite
-
+    optional arguments:
+      -h, --help            show this help message and exit
+      -u USERNAME, --username USERNAME
+                            Rackspace cloudfiles or Openstack swift username (default: CFUSER)
+      -k KEY, --key KEY     Rackspace cloudfiles or Openstack swift API key (default: CFKEY)
+      -a AUTHURL, --authurl AUTHURL
+                            Rackspace cloudfiles or Openstack swift auth url (default: CFAUTHURL)
+      -c CONTAINER, --container CONTAINER
+                            Use the specified container (default: use the first
+                            container [index 0])
+      -s, --service-net     Use the Rackspace service network (default: use public
+                            network)
+      -i PING_INTERVAL, --interval PING_INTERVAL
+                            Seconds to wait between ping requests (default: 1
+                            seconds)
+      -r PING_REPETITIONS, --repetitions PING_REPETITIONS
+                        Number of repetitions (default: 0 repetitions) default
+                            infinite
 
 
 Environment
