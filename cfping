@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
     authurl = args.authurl or os.getenv('CFAUTHURL')
     if not authurl:
-        parser.error("username not provided and not found in CFUSER environment variable")
+        parser.error("authurl not provided and not found in CFAUTHURL environment variable")
 
     key = args.key or os.getenv('CFKEY')
     if not key:
