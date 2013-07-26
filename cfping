@@ -1,7 +1,7 @@
 #!/usr/bin/env python -u
 
 """
-cloudfiles-ping: Test the performance and availability of the Rackspace cloudfiles service.
+cloudfiles-ping: Test the performance and availability of the Rackspace cloudfiles or Openstack swiftservice.
 """
 
 import argparse
@@ -34,7 +34,7 @@ def timer():
     
 def ping(auth_url,username, key, container=None, use_service_net=False, repetitions=True):
     """
-    Ping the Rackspace cloudfiles service, printing the elapsed time for a connection, a write, and a read.
+    Ping the Rackspace cloudfiles or Openstack swiftservice, printing the elapsed time for a connection, a write, and a read.
     """
 
     try:
@@ -78,9 +78,9 @@ def ping(auth_url,username, key, container=None, use_service_net=False, repetiti
 def ping_forever(authurl,username, key,
                  container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL,repetitions=0):
     """
-    Continually ping the Rackspace cloudfiles service, sleeping for `ping_interval` seconds between requests.
+    Continually ping the Rackspace cloudfiles or Openstack swift service, sleeping for `ping_interval` seconds between requests.
     """
-    print 'Pinging Rackspace cloudfiles (sending request every %d seconds):' % ping_interval
+    print 'Pinging Rackspace cloudfiles or Openstack swift (sending request every %d seconds):' % ping_interval
     print '%10s %10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 'connect', 'container', 'create', 'write', 'read', 'delete', 'total')
 
     request_count = 0
@@ -102,11 +102,11 @@ def ping_forever(authurl,username, key,
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Test the performance and availability of the Rackspace cloudfiles service.')
+    parser = argparse.ArgumentParser(description='Test the performance and availability of the Rackspace cloudfiles or Openstack swiftservice.')
 
-    parser.add_argument('-u', '--username', help='Rackspace cloudfiles username (default: CFUSER)')
-    parser.add_argument('-k', '--key', help='Rackspace cloudfiles API key (default: CFKEY)')
-    parser.add_argument('-a', '--authurl', help='Rackspace cloudfiles auth url (default: CFAUTHURL)')
+    parser.add_argument('-u', '--username', help='Rackspace cloudfiles or Openstack swift username (default: CFUSER)')
+    parser.add_argument('-k', '--key', help='Rackspace cloudfiles or Openstack swift API key (default: CFKEY)')
+    parser.add_argument('-a', '--authurl', help='Rackspace cloudfiles or Openstack swift auth url (default: CFAUTHURL)')
     parser.add_argument('-c', '--container',
                        help='Use the specified container (default: use the first container [index 0])')
     parser.add_argument('-s', '--service-net', dest="use_service_net", action='store_true',
