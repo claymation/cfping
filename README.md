@@ -33,7 +33,8 @@ Usage
                             Rackspace cloudfiles or Openstack swift username (default: CFUSER)
       -k KEY, --key KEY     Rackspace cloudfiles or Openstack swift API key (default: CFKEY)
       -a AUTHURL, --authurl AUTHURL
-                            Rackspace cloudfiles or Openstack swift auth url (default: CFAUTHURL)
+                            Rackspace cloudfiles or Openstack swift auth url
+                            (default: https://auth.api.rackspacecloud.com/v1.0)
       -c CONTAINER, --container CONTAINER
                             Use the specified container (default: use the first
                             container [index 0])

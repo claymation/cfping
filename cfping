@@ -120,7 +120,8 @@ if __name__ == '__main__':
 
     parser.add_argument('-u', '--username', help='Rackspace cloudfiles or Openstack swift username (default: CFUSER)')
     parser.add_argument('-k', '--key', help='Rackspace cloudfiles or Openstack swift API key (default: CFKEY)')
-    parser.add_argument('-a', '--authurl', help='Rackspace cloudfiles or Openstack swift auth url (default: CFAUTHURL)')
+    parser.add_argument('-a', '--authurl', help='Rackspace cloudfiles or Openstack swift auth url '
+                                                '(default: %s)' % cloudfiles.us_authurl)
     parser.add_argument('-c', '--container',
                        help='Use the specified container (default: use the first container [index 0])')
     parser.add_argument('-s', '--service-net', dest="use_service_net", action='store_true',
@@ -141,7 +142,7 @@ if __name__ == '__main__':
 
     authurl = args.authurl or os.getenv('CFAUTHURL')
     if not authurl:
-        parser.error("authurl not provided and not found in CFAUTHURL environment variable")
+        authurl = cloudfiles.us_authurl
 
     key = args.key or os.getenv('CFKEY')
     if not key:
