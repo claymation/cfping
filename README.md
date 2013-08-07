@@ -1,20 +1,20 @@
 cfping
 ======
 
-Test the performance and availability of the Rackspace cloudfiles service.
+Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.
 
 
 Example
 -------
 
     $ cfping
-    Pinging Rackspace cloudfiles (sending request every 1 seconds):
-        seq. #    connect  container     create      write       read      total
-             1      0.448      0.369      0.121      1.331      0.047      2.317
-             2      0.345      0.390      0.116      0.375      0.050      1.277
-             3      0.671      0.339      0.183      0.239      0.053      1.486
-             4      0.341      0.352      0.245      1.541      0.049      2.527
-             5      0.360      0.342      0.116      0.900      0.047      1.764
+    Pinging storage (sending request every 1 seconds with 81.0 bytes ):
+        seq. #    connect  container     create      write       read     delete      total
+             1      0.100      0.061      0.041      0.286      0.009      0.034      0.532
+             2      0.068      0.059      0.031      0.168      0.010      0.014      0.351
+             3      0.067      0.058      0.027      0.085      0.009      0.013      0.260
+             4      0.066      0.059      0.012      0.090      0.009      0.014      0.251
+             5      0.066      0.061      0.044      0.052      0.010      0.014      0.247
     ^C
     5 requests
 
@@ -22,16 +22,19 @@ Example
 Usage
 -----
 
-    usage: cfping [-h] [-u USERNAME] [-k KEY] [-c CONTAINER] [-s]
-                  [-i PING_INTERVAL]
+    usage: cfping [-h] [-u USERNAME] [-k KEY] [-a AUTHURL] [-c CONTAINER] [-s]
+                  [-i PING_INTERVAL] [-r PING_REPETITIONS] [-t TEST_DATA_SIZE]
 
-    Test the performance and availability of the Rackspace cloudfiles service.
+    Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.
 
     optional arguments:
       -h, --help            show this help message and exit
       -u USERNAME, --username USERNAME
-                            Rackspace cloudfiles username (default: CFUSER)
-      -k KEY, --key KEY     Rackspace cloudfiles API key (default: CFKEY)
+                            Rackspace cloudfiles or Openstack swift username (default: CFUSER)
+      -k KEY, --key KEY     Rackspace cloudfiles or Openstack swift API key (default: CFKEY)
+      -a AUTHURL, --authurl AUTHURL
+                            Rackspace cloudfiles or Openstack swift auth url
+                            (default: https://auth.api.rackspacecloud.com/v1.0)
       -c CONTAINER, --container CONTAINER
                             Use the specified container (default: use the first
                             container [index 0])
@@ -40,6 +43,12 @@ Usage
       -i PING_INTERVAL, --interval PING_INTERVAL
                             Seconds to wait between ping requests (default: 1
                             seconds)
+      -r PING_REPETITIONS, --repetitions PING_REPETITIONS
+                        Number of repetitions (default: 0 repetitions) default
+                            infinite
+                            
+      -t TEST_DATA_SIZE, --test-data-size TEST_DATA_SIZE
+                        Test data size in Bytes (default: 81 Bytes)
 
 
 Environment
@@ -49,7 +58,7 @@ Environment
 
 * `CFUSER`, the account username. The `-u` option, if provided, takes precedence.
 * `CFKEY`, the account key. The `-k` option, if provided, takes precedence.
-
+* `CFAUTHURL`, the authentication endpoint. The `-a` option, if provided, takes precedence.
 
 Installation
 ------------

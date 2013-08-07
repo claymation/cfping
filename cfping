@@ -1,7 +1,7 @@
 #!/usr/bin/env python -u
 
 """
-cloudfiles-ping: Test the performance and availability of the Rackspace cloudfiles service.
+cloudfiles-ping: Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.
 """
 
 import argparse
@@ -9,13 +9,22 @@ import contextlib
 import os
 import time
 import uuid
+import sys
 
 import cloudfiles
 
 
 DEFAULT_PING_INTERVAL = 1
+DEFAULT_PING_REPETITIONS = None
 TEST_DATA = 'The quick brown fox jumps over the lazy dog.'
 
+
+
+def sizeof_fmt(num):
+    for x in ['bytes','KB','MB','GB','TB','PB']:
+        if num < 1024.0:
+            return "%3.1f %s" % (num, x)
+        num /= 1024.0
 
 @contextlib.contextmanager
 def timer():
@@ -31,16 +40,19 @@ def timer():
     print '%10.3f' % (elapsed_time),
 
     
-def ping(username, key, container=None, use_service_net=False):
+def ping(auth_url, username, key, container=None, use_service_net=False, repetitions=True):
     """
-    Ping the Rackspace cloudfiles service, printing the elapsed time for a connection, a write, and a read.
+    Ping the Rackspace cloudfiles or Openstack swift service, printing the elapsed time for a connection, a write, and a read.
     """
 
     try:
         with timer():
 
             with timer():
-                conn = cloudfiles.get_connection(username, key, servicenet=use_service_net)
+                conn = cloudfiles.get_connection(username, 
+                                                 key, 
+                                                 servicenet=use_service_net, 
+                                                 authurl=auth_url)
 
             with timer():
                 if container is None:
@@ -59,6 +71,9 @@ def ping(username, key, container=None, use_service_net=False):
 
             with timer():
                 result = obj.read()
+            
+            with timer():
+                container.delete_object(obj_name)
 
         if result != TEST_DATA:
             print '%10s' % ('NOMATCH'),
@@ -71,23 +86,29 @@ def ping(username, key, container=None, use_service_net=False):
     print
 
 
-def ping_forever(username, key,
-                 container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL):
+def ping_forever(authurl, username, key,
+                 container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL,repetitions=0):
     """
-    Continually ping the Rackspace cloudfiles service, sleeping for `ping_interval` seconds between requests.
+    Continually ping the Rackspace cloudfiles or Openstack swift service, sleeping for `ping_interval` seconds between requests.
     """
-    print 'Pinging Rackspace cloudfiles (sending request every %d seconds):' % ping_interval
-    print '%10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 'connect', 'container', 'create', 'write', 'read', 'total')
-
+    print 'Pinging storage (sending request every %d seconds with %s ):' % (ping_interval, sizeof_fmt(sys.getsizeof(TEST_DATA)))
+    print '%10s %10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 
+                                                       'connect', 
+                                                       'container', 
+                                                       'create', 
+                                                       'write', 
+                                                       'read', 
+                                                       'delete', 
+                                                       'total')
     request_count = 0
-
     try:
-
         while True:
             print '%10d' % (request_count + 1), 
-            ping(username, key, container=container, use_service_net=use_service_net)
+            ping(authurl, username, key, container=container, use_service_net=use_service_net)
             request_count += 1
             time.sleep(ping_interval)
+            if repetitions and request_count == repetitions:
+                break
 
     except KeyboardInterrupt:
         print
@@ -95,16 +116,23 @@ def ping_forever(username, key,
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Test the performance and availability of the Rackspace cloudfiles service.')
+    parser = argparse.ArgumentParser(description='Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.')
 
-    parser.add_argument('-u', '--username', help='Rackspace cloudfiles username (default: CFUSER)')
-    parser.add_argument('-k', '--key', help='Rackspace cloudfiles API key (default: CFKEY)')
+    parser.add_argument('-u', '--username', help='Rackspace cloudfiles or Openstack swift username (default: CFUSER)')
+    parser.add_argument('-k', '--key', help='Rackspace cloudfiles or Openstack swift API key (default: CFKEY)')
+    parser.add_argument('-a', '--authurl', help='Rackspace cloudfiles or Openstack swift auth url '
+                                                '(default: %s)' % cloudfiles.us_authurl)
     parser.add_argument('-c', '--container',
                        help='Use the specified container (default: use the first container [index 0])')
     parser.add_argument('-s', '--service-net', dest="use_service_net", action='store_true',
                        help='Use the Rackspace service network (default: use public network)')
     parser.add_argument('-i', '--interval', dest='ping_interval', type=int, default=DEFAULT_PING_INTERVAL,
                        help='Seconds to wait between ping requests (default: %d seconds)' % DEFAULT_PING_INTERVAL)
+    parser.add_argument('-r', '--repetitions', dest='ping_repetitions', type=int, default=DEFAULT_PING_REPETITIONS,
+                       help='Number of repetitions (default: infinite)')
+    parser.add_argument('-t', '--test-data-size', dest='test_data_size', type=int, default=sys.getsizeof(TEST_DATA),
+                       help='Test data size in Bytes (default: %d Bytes)' % sys.getsizeof(TEST_DATA))
+
 
     args = parser.parse_args()
 
@@ -112,11 +140,19 @@ if __name__ == '__main__':
     if not username:
         parser.error("username not provided and not found in CFUSER environment variable")
 
+    authurl = args.authurl or os.getenv('CFAUTHURL')
+    if not authurl:
+        authurl = cloudfiles.us_authurl
+
     key = args.key or os.getenv('CFKEY')
     if not key:
         parser.error("key not provided and not found in CFKEY environment variable")
 
-    ping_forever(username, key,
+    if args.test_data_size != sys.getsizeof(TEST_DATA):
+        TEST_DATA = str(os.urandom(args.test_data_size - sys.getsizeof('')))
+
+    ping_forever(authurl,username, key,
                  container=args.container,
                  use_service_net=args.use_service_net,
-                 ping_interval=args.ping_interval)
+                 ping_interval=args.ping_interval,
+                 repetitions=args.ping_repetitions)
