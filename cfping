@@ -87,7 +87,9 @@ def ping(auth_url, username, key, container=None, use_service_net=False):
 
 
 def ping_forever(authurl, username, key,
-                 container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL, repetitions=0):
+                 container=None, use_service_net=False,
+                 ping_interval=DEFAULT_PING_INTERVAL,
+                 repetitions=DEFAULT_PING_REPETITIONS):
     """
     Continually ping the Rackspace cloudfiles or Openstack swift service, sleeping for `ping_interval` seconds between requests.
     """
