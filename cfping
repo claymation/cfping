@@ -40,7 +40,7 @@ def timer():
     print '%10.3f' % (elapsed_time),
 
     
-def ping(auth_url, username, key, container=None, use_service_net=False, repetitions=True):
+def ping(auth_url, username, key, container=None, use_service_net=False):
     """
     Ping the Rackspace cloudfiles or Openstack swift service, printing the elapsed time for a connection, a write, and a read.
     """
