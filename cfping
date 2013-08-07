@@ -102,14 +102,16 @@ def ping_forever(authurl, username, key,
                                                        'read', 
                                                        'delete', 
                                                        'total')
-    request_count = 0
     try:
+        request_count = 1
         while True:
-            print '%10d' % (request_count + 1), 
+            print '%10d' % (request_count),
+
             ping(authurl, username, key, container=container, use_service_net=use_service_net)
             time.sleep(ping_interval)
+
             request_count += 1
-            if repetitions and request_count >= repetitions:
+            if repetitions is not None and request_count > repetitions:
                 break
 
     except KeyboardInterrupt:
