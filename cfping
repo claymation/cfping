@@ -122,9 +122,9 @@ def ping_forever(authurl, username, key,
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.')
 
-    parser.add_argument('-u', '--username', help='Rackspace cloudfiles or Openstack swift username (default: CFUSER)')
-    parser.add_argument('-k', '--key', help='Rackspace cloudfiles or Openstack swift API key (default: CFKEY)')
-    parser.add_argument('-a', '--authurl', help='Rackspace cloudfiles or Openstack swift auth url '
+    parser.add_argument('-u', '--username', help='Storage service username (default: CFUSER)')
+    parser.add_argument('-k', '--key', help='Storage service key (default: CFKEY)')
+    parser.add_argument('-a', '--authurl', help='Storage service auth URL '
                                                 '(default: %s)' % cloudfiles.us_authurl)
     parser.add_argument('-c', '--container',
                        help='Use the specified container (default: use the first container [index 0])')
