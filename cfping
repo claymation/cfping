@@ -19,12 +19,12 @@ DEFAULT_PING_REPETITIONS = None
 TEST_DATA = 'The quick brown fox jumps over the lazy dog.'
 
 
-
 def sizeof_fmt(num):
     for x in ['bytes','KB','MB','GB','TB','PB']:
         if num < 1024.0:
             return "%3.1f %s" % (num, x)
         num /= 1024.0
+
 
 @contextlib.contextmanager
 def timer():
@@ -87,11 +87,11 @@ def ping(auth_url, username, key, container=None, use_service_net=False, repetit
 
 
 def ping_forever(authurl, username, key,
-                 container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL,repetitions=0):
+                 container=None, use_service_net=False, ping_interval=DEFAULT_PING_INTERVAL, repetitions=0):
     """
     Continually ping the Rackspace cloudfiles or Openstack swift service, sleeping for `ping_interval` seconds between requests.
     """
-    print 'Pinging storage (sending request every %d seconds with %s ):' % (ping_interval, sizeof_fmt(sys.getsizeof(TEST_DATA)))
+    print 'Pinging storage (sending request every %d seconds with %s):' % (ping_interval, sizeof_fmt(sys.getsizeof(TEST_DATA)))
     print '%10s %10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 
                                                        'connect', 
                                                        'container', 
@@ -105,9 +105,9 @@ def ping_forever(authurl, username, key,
         while True:
             print '%10d' % (request_count + 1), 
             ping(authurl, username, key, container=container, use_service_net=use_service_net)
-            request_count += 1
             time.sleep(ping_interval)
-            if repetitions and request_count == repetitions:
+            request_count += 1
+            if repetitions and request_count >= repetitions:
                 break
 
     except KeyboardInterrupt:
@@ -133,25 +133,24 @@ if __name__ == '__main__':
     parser.add_argument('-t', '--test-data-size', dest='test_data_size', type=int, default=sys.getsizeof(TEST_DATA),
                        help='Test data size in Bytes (default: %d Bytes)' % sys.getsizeof(TEST_DATA))
 
-
     args = parser.parse_args()
 
     username = args.username or os.getenv('CFUSER')
     if not username:
         parser.error("username not provided and not found in CFUSER environment variable")
 
-    authurl = args.authurl or os.getenv('CFAUTHURL')
-    if not authurl:
-        authurl = cloudfiles.us_authurl
-
     key = args.key or os.getenv('CFKEY')
     if not key:
         parser.error("key not provided and not found in CFKEY environment variable")
 
+    authurl = args.authurl or os.getenv('CFAUTHURL')
+    if not authurl:
+        authurl = cloudfiles.us_authurl
+
     if args.test_data_size != sys.getsizeof(TEST_DATA):
         TEST_DATA = str(os.urandom(args.test_data_size - sys.getsizeof('')))
 
-    ping_forever(authurl,username, key,
+    ping_forever(authurl, username, key,
                  container=args.container,
                  use_service_net=args.use_service_net,
                  ping_interval=args.ping_interval,
