@@ -130,7 +130,7 @@ if __name__ == '__main__':
                        help='Seconds to wait between ping requests (default: %d seconds)' % DEFAULT_PING_INTERVAL)
     parser.add_argument('-r', '--repetitions', dest='ping_repetitions', type=int, default=DEFAULT_PING_REPETITIONS,
                        help='Number of repetitions (default: infinite)')
-    parser.add_argument('-t', '--test-data-size', dest='test_data_size', type=int, default=sys.getsizeof(TEST_DATA),
+    parser.add_argument('-t', '--test-data-size', dest='test_data_size', type=int, default=len(TEST_DATA),
                        help='Test data size in Bytes (default: %d Bytes)' % sys.getsizeof(TEST_DATA))
 
 
