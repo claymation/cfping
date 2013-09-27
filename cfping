@@ -127,7 +127,7 @@ if __name__ == '__main__':
                        help='Use the specified container (default: use the first container [index 0])')
     parser.add_argument('-s', '--service-net', dest="use_service_net", action='store_true',
                        help='Use the Rackspace service network (default: use public network)')
-    parser.add_argument('-i', '--interval', dest='ping_interval', type=float, default=DEFAULT_PING_INTERVAL,
+    parser.add_argument('-i', '--interval', dest='ping_interval', type=float, default=DEFAULT_PING_ ,
                        help='Seconds to wait between ping requests (default: %d seconds)' % DEFAULT_PING_INTERVAL)
     parser.add_argument('-r', '--repetitions', dest='ping_repetitions', type=int, default=DEFAULT_PING_REPETITIONS,
                        help='Number of repetitions (default: infinite)')
