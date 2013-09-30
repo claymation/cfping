@@ -132,7 +132,16 @@ def ping_forever(authurl,
                  stats=stats)
             request_count += 1
             if repetitions and request_count == repetitions:
-                break
+                break 
+            if not machine_readable and not request_count % 25:
+                 print '%10s %10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 
+                                                                    'connect', 
+                                                                    'container', 
+                                                                    'create', 
+                                                                    'write', 
+                                                                    'read', 
+                                                                    'delete', 
+                                                                    'total')
             time.sleep(ping_interval)
 
     except KeyboardInterrupt:
