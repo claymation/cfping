@@ -27,7 +27,6 @@ delete_times=[]
 total_times=[]
 
 
-
 def sizeof_fmt(num):
     for x in ['bytes','KB','MB','GB','TB','PB']:
         if num < 1024.0:
@@ -52,7 +51,7 @@ def timer(time_list=[], stats=False):
 
     
 def ping(auth_url, username, key, container=None, use_service_net=False, 
-         repetitions=True,stats=False):
+         stats=False):
     """
     Ping the Rackspace cloudfiles or Openstack swift service, printing the 
     elapsed time for a connection, a write, and a read.
@@ -99,15 +98,10 @@ def ping(auth_url, username, key, container=None, use_service_net=False,
     print
 
 
-def ping_forever(authurl, 
-                 username, 
-                 key,
-                 container=None, 
-                 use_service_net=False, 
+def ping_forever(authurl, username, key, container=None, use_service_net=False, 
                  ping_interval=DEFAULT_PING_INTERVAL,
-                 repetitions=0,
-                 machine_readable=False,
-                 stats=False):
+                 repetitions=DEFAULT_PING_REPETITIONS,
+                 machine_readable=False, stats=False):
     """
     Continually ping the Rackspace cloudfiles or Openstack swift service, 
     sleeping for `ping_interval` seconds between requests.
@@ -132,7 +126,7 @@ def ping_forever(authurl,
                  stats=stats)
             request_count += 1
             if repetitions and request_count == repetitions:
-                break 
+                break
             if not machine_readable and not request_count % 25:
                 print '%10s %10s %10s %10s %10s %10s %10s %10s' % ('seq. #', 
                                                                    'connect', 
@@ -179,16 +173,15 @@ def ping_forever(authurl,
               sum(delete_times) / float(len(delete_times)),
               sum(total_times) / float(len(total_times)))
 
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Test the performance and availability of the Rackspace cloudfiles or Openstack swift service.')
 
     parser.add_argument('-u', '--username', 
-                        help='Rackspace cloudfiles or Openstack swift username (default: CFUSER)')
+                        help='Storage service username (default: CFUSER)')
     parser.add_argument('-k', '--key', 
-                        help='Rackspace cloudfiles or Openstack swift API key (default: CFKEY)')
+                        help='Storage service API key (default: CFKEY)')
     parser.add_argument('-a', '--authurl', 
-                        help='Rackspace cloudfiles or Openstack swift auth url '
+                        help='Storage service auth URL '
                              '(default: %s)' % cloudfiles.us_authurl)
     parser.add_argument('-c', '--container',
                         help='Use the specified container (default: use the first container [index 0])')
@@ -217,13 +210,13 @@ if __name__ == '__main__':
     if not username:
         parser.error("username not provided and not found in CFUSER environment variable")
 
-    authurl = args.authurl or os.getenv('CFAUTHURL')
-    if not authurl:
-        authurl = cloudfiles.us_authurl
-
     key = args.key or os.getenv('CFKEY')
     if not key:
         parser.error("key not provided and not found in CFKEY environment variable")
+
+    authurl = args.authurl or os.getenv('CFAUTHURL')
+    if not authurl:
+        authurl = cloudfiles.us_authurl
 
     if args.test_data_size != sys.getsizeof(TEST_DATA):
         TEST_DATA = str(os.urandom(args.test_data_size - sys.getsizeof('')))
